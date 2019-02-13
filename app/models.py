@@ -17,4 +17,6 @@ class User(db.Model):
     sex = db.Column(db.Boolean)
     job = db.Column(db.String(100))
     company_id = db.Column(db.Integer,db.ForeignKey(Company.id),nullable=True)
+    token = db.Column(db.String(200),nullable=True)
+    is_delete = db.Column(db.Boolean,default=False)
 
