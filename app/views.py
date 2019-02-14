@@ -1,4 +1,6 @@
 import math, time
+from datetime import timedelta
+
 from flask import Blueprint, session, render_template, request, redirect, url_for, jsonify
 from app.plugin import cache
 from . import models,plugin
@@ -15,11 +17,19 @@ def blue_init(app):
 def test():
     return "success!"
 
+# 设置 session http://10.20.152.50:8000/setsess/
 @blue.route('/setsess/')
 def setsess():
     session['key'] = 'value'
+    print('打印出浏览器需要的 sessionid - value： ')
+    print(request.cookies.get('sessionid'))
+    print(type(request.cookies))
+    print(dir(request.cookies))
+    # session.permanent = True
+    # app.permanent_session_lifetime = timedelta(seconds=5)
     return 'set session success!'
 
+# 获取 session
 @blue.route('/getsess/')
 def getsess():
     result = session.get('key','not find')

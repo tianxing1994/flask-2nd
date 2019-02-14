@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from flask_caching import Cache
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_migrate import Migrate
@@ -22,9 +24,21 @@ def plugin_init(app):
     # 配置调试状态
     app.config['DEBUG'] = settings.DEBUG # 或： app.debug = True
 
-    # 配置 session
+    # 配置密钥
     app.config['SECRET_KEY'] = settings.SECRET_KEY
-    app.config['SESSION_TYPE'] = settings.SESSION_TYPE
+
+    # 配置 session
+    '''
+    # app.config['SESSION_TYPE'] = settings.SESSION_TYPE
+    # app.config['SESSION_KEY_PREFIX'] = 'session_login_flask:'
+    # app.config['SESSION_COOKIE_NAME'] = 'sessionid'
+    #
+    # # 如果用户在指定时间内未再次访问本网站，则 session 会失效。如再次访问，则重新开始记时。 需要 session.permanent = True（True 为默认值）
+    # app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(seconds=10)
+    '''
+
+    session_config = settings.SESSION.get(settings.SESSION.get('ENABLE'))
+    app.config.from_mapping(session_config)
     Session(app)
 
     # 配置数据库

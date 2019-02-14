@@ -1,10 +1,12 @@
+import json
 import random
+import re
 import time
 
-from flask import request
+from flask import request,session
 from flask_restful import Resource, marshal_with, fields, marshal,reqparse
 from app import models
-from tools import encrypt,mailmanager
+from tools import encrypt, mailmanager, smsmanager
 from app.plugin import cache
 from app.plugin import mail
 
@@ -18,6 +20,7 @@ class SignUp(Resource):
         parser.add_argument('phone', type=str, help='phone error')
         args = parser.parse_args()
 
+        # 生成 token
         ip = request.remote_addr
         timestamp = time.time()
         random_num = random.randrange(1000,9999)
@@ -89,15 +92,37 @@ class SignIn(Resource):
         password = args.get('password')
 
         the_member = models.Members.query.filter(models.Members.username==username,models.Members.password==password).first()
+
         result = {
             'time': time.time(),  # 请求时间
         }
 
         if the_member and not the_member.is_delete and the_member.is_active:
             print('用户存在，未删除，激活状态')
+            # 登录成功 - 生成 token 保存到  session
+
+            # 生成 token
+            ip = request.remote_addr
+            timestamp = time.time()
+            random_num = random.randrange(1000, 9999)
+            real_token = str(ip) + str(timestamp) + str(random_num)
+            token = encrypt.encrypt_md5(real_token)
+
+            # token 保存到 member 数据库表单
+            the_member.token = token
+            models.db.session.add(the_member)
+            models.db.session.commit()
+
+            # 设置 session
+            session[token] = True
+            print(session.get(token, False))
+
+            # 将 token 交给前端
+            result['token'] = token
             result['status'] = 200
             result['success'] = True
             result['message'] = 'Success!'
+
         elif the_member and not the_member.is_delete and not the_member.is_active:
             print('用户存在，未删除，未激活')
             result['status'] = 406
@@ -110,5 +135,61 @@ class SignIn(Resource):
             result['message'] = 'User or password error'
         return result
 
+class ResetPassword(Resource):
+    def get(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('phone', type=str, required=True ,help='phone error')
+        args = parser.parse_args()
 
+        phone = args.get('phone')
+        code = str(random.randrange(100000,1000000))
+        valid_time_text = 1
+        response = smsmanager.send_sms_captcha(phone,code,valid_time_text)
+        print(response.text)
+
+        pattern = r'"respCode":"([^,]*)?"'
+        string = response.text
+        respCode = re.search(pattern,string).group(1)
+        print(respCode)
+        print(type(respCode))
+        result = {}
+        if respCode == '00000':
+            cache.set(phone, code, timeout=60*60)
+            print(cache.get(phone))
+            result = {
+                'status':200,
+                'success':True,
+                'message':'我们已向您的手机发送验证码！',
+                'time':time.time(),
+            }
+
+        return result
+
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('phone', type=str, required=True ,help='phone error')
+        parser.add_argument('code', type=str, help='code error')
+        parser.add_argument('password', type=str, help='password error')
+        args = parser.parse_args()
+        phone = args.get('phone')
+        code = str(args.get('code'))
+        password = args.get('password')
+        # print(args)
+        # cache.set(phone,code,timeout=60)
+        right_code = str(cache.get(phone))
+        result = {}
+        if right_code == code:
+            # print('yes')
+            the_member = models.Members.query.filter(models.Members.phone == phone).first()
+            if the_member and not the_member.is_delete and the_member.is_active:
+                the_member.password = password
+                models.db.session.add(the_member)
+                models.db.session.commit()
+                result = {
+                    'status': 200,
+                    'success': True,
+                    'message': '我们已为您修改密码！',
+                    'time': time.time(),
+                }
+        return result
 

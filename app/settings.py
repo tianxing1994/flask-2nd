@@ -15,6 +15,21 @@ TESTING = False
 # DEBUG_TB_PROFILER_ENABLED = True
 # DEBUG_TB_TEMPLATE_EDITOR_ENABLED = True
 
+
+SESSION = {
+    'ENABLE' : 'redis',
+    'redis' : {
+        'SESSION_TYPE': 'redis',
+        'SESSION_KEY_PREFIX':'session_login_flask',
+        'SESSION_COOKIE_NAME':'sessionid',
+        'PERMANENT_SESSION_LIFETIME': 10
+    },
+}
+
+
+
+
+
 DATABASES = {
     'mysql': {
         # dialect+driver://username:password@host:port/database
@@ -38,7 +53,7 @@ CACHE = {
     'ENABLE' : 'redis',
     'redis' : {
         'CACHE_TYPE': 'redis',
-        'CACHE_KEY_PREFIX': 'python(Flask)',
+        'CACHE_KEY_PREFIX': 'cache_flask',
     },
     'simple' : {
         'CACHE_TYPE': 'simple',
