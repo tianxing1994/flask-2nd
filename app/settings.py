@@ -4,8 +4,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = 's29o)40!yp=-3*ods9v^4*6=&vrrz_*!-efjz6jrsisqkssx25'
 
-SESSION_TYPE = 'redis'
-
 DEBUG = True
 TESTING = False
 # DEBUG_TB_INTERCEPT_REDIRECTS = False
@@ -22,7 +20,7 @@ SESSION = {
         'SESSION_TYPE': 'redis',
         'SESSION_KEY_PREFIX':'session_login_flask',
         'SESSION_COOKIE_NAME':'sessionid',
-        'PERMANENT_SESSION_LIFETIME': 10
+        'PERMANENT_SESSION_LIFETIME': 2000
     },
 }
 

@@ -1,7 +1,7 @@
 import math, time
 from datetime import timedelta
 
-from flask import Blueprint, session, render_template, request, redirect, url_for, jsonify
+from flask import Blueprint, session, render_template, request, redirect, url_for, jsonify, g
 from app.plugin import cache
 from . import models,plugin
 
@@ -13,6 +13,7 @@ def blue_init(app):
     plugin.plugin_init(app)
 
 
+
 @blue.route('/test/')
 def test():
     return "success!"
@@ -21,10 +22,11 @@ def test():
 @blue.route('/setsess/')
 def setsess():
     session['key'] = 'value'
-    print('打印出浏览器需要的 sessionid - value： ')
-    print(request.cookies.get('sessionid'))
-    print(type(request.cookies))
-    print(dir(request.cookies))
+    session["sid"] = session.sid
+    # print('打印出浏览器需要的 sessionid - value： ')
+    # print(request.cookies.get('sessionid'))
+    # print(type(request.cookies))
+    # print(dir(request.cookies))
     # session.permanent = True
     # app.permanent_session_lifetime = timedelta(seconds=5)
     return 'set session success!'
@@ -32,8 +34,17 @@ def setsess():
 # 获取 session
 @blue.route('/getsess/')
 def getsess():
-    result = session.get('key','not find')
+    print(session.sid)
+    result = session.get('sid','not find')
     return 'the session value of key is %s' % result
+
+# get 请求转入 sessionid 根据指定 id 获取 session 中的内容
+@blue.route('/getsessbysid/<sid>/')
+def getsessbysid(sid):
+    session.sid = sid
+    result = session.get('sid','not find')
+    return '[getsessbysid] the session value of key is %s' % result
+
 
 # 随机增加 user 对象
 @blue.route('/randomAddUser/')

@@ -114,11 +114,13 @@ class SignIn(Resource):
             models.db.session.commit()
 
             # 设置 session
+
             session[token] = True
-            print(session.get(token, False))
+            sessionid = session.sid
+            print(sessionid)
 
             # 将 token 交给前端
-            result['token'] = token
+            result['sessionid'] = sessionid
             result['status'] = 200
             result['success'] = True
             result['message'] = 'Success!'
