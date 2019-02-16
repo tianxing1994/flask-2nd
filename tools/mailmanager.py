@@ -3,6 +3,7 @@ from flask_mail import Message
 
 
 def send_email_active_link(email,active_link,mail):
+
     context = {'email':email,'active_link':active_link}
     html = render_template('email/active.html', **context)
 

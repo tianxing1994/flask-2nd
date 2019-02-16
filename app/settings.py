@@ -1,36 +1,35 @@
 import os
 
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 
 SECRET_KEY = 's29o)40!yp=-3*ods9v^4*6=&vrrz_*!-efjz6jrsisqkssx25'
 
+
 DEBUG = True
+
+
 TESTING = False
-# DEBUG_TB_INTERCEPT_REDIRECTS = False
-# DEBUG_TB_ENABLED = True
-# DEBUG_TB_HOSTS = [*]
-# DEBUG_TB_PANELS = False
-# DEBUG_TB_PROFILER_ENABLED = True
-# DEBUG_TB_TEMPLATE_EDITOR_ENABLED = True
 
 
 SESSION = {
     'ENABLE' : 'redis',
     'redis' : {
+        # PERMANENT_SESSION_LIFETIME： 如果用户在指定时间内未再次访问本网站，则 session 会失效。如再次访问，则重新开始记时。 需要 session.permanent = True（True 为默认值）
         'SESSION_TYPE': 'redis',
         'SESSION_KEY_PREFIX':'session_login_flask',
         'SESSION_COOKIE_NAME':'sessionid',
-        'PERMANENT_SESSION_LIFETIME': 2000
+        'PERMANENT_SESSION_LIFETIME': 2000,
     },
 }
 
 
-
-
-
 DATABASES = {
+    'ENABLE' : 'mysql',
     'mysql': {
         # dialect+driver://username:password@host:port/database
+        # 'DRIVER'： pymysql-python模块，用于在 python 中操作 MySql 数据库。即纯 Python MySQL 客户端。
         'DIALECT': 'mysql',
         'DRIVER':'pymysql',
         'USERNAME': 'root',
@@ -42,8 +41,16 @@ DATABASES = {
 
     'sqlite': {
         # 'sqlite:///flaskTest.db'
+        # 'DIALECT': dialect 方言，因为不同的数据库为了提高性能，都提供了一些额外的标准或语法，因此对不同的数据库都要指定 dialect 方言。
+        # 'NAME'： sqlite 数据库是文件类型，这里需要指定要使用的 sqlite 数据库的路径与文件名。
+        'DIALECT': 'sqlite',
         'NAME': os.path.join(BASE_DIR,'flaskTest.db'),
     },
+}
+
+
+DEBUG_TOOL_BAR = {
+    'DEBUG_TB_INTERCEPT_REDIRECTS': False,
 }
 
 

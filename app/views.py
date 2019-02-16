@@ -45,7 +45,6 @@ def getsessbysid(sid):
     result = session.get('sid','not find')
     return '[getsessbysid] the session value of key is %s' % result
 
-
 # 随机增加 user 对象
 @blue.route('/randomAddUser/')
 def randomAddUser():
