@@ -8,7 +8,7 @@ from flask_restful import Resource, marshal_with, fields, marshal,reqparse
 from app import models
 from tools import encrypt, mailmanager, smsmanager
 from app.plugin import cache
-from app.plugin import mail
+# from app.plugin import mail
 
 class SignUp(Resource):
     # 创建用户

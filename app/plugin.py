@@ -15,7 +15,7 @@ bootstrap = Bootstrap()
 toolbar = DebugToolbarExtension()
 cache = Cache()
 api = Api()
-mail = Mail()
+# mail = Mail()
 
 def plugin_init(app):
 
@@ -83,6 +83,20 @@ def plugin_init(app):
     api.init_app(app)
 
     # 配置 mail
+    # mail_config = settings.EMAIL.get(settings.EMAIL.get('ENABLE'))
+    # app.config.from_mapping(mail_config)
+    # mail.init_app(app)
+
+
+
+if __name__ == '__main__':
     mail_config = settings.EMAIL.get(settings.EMAIL.get('ENABLE'))
+    print(mail_config)
+
+    from flask import Flask
+
+    mail = Mail()
+
+    app = Flask(__name__)
     app.config.from_mapping(mail_config)
     mail.init_app(app)

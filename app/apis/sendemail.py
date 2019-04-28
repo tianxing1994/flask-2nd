@@ -1,6 +1,6 @@
 from flask_mail import Message
 from flask_restful import Resource
-from app.plugin import mail
+# from app.plugin import mail
 
 
 class SendEmailTest(Resource):
