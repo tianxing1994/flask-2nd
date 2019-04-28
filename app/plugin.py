@@ -7,7 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bootstrap import Bootstrap
 from flask_restful import Api
 from flask_mail import Mail
-from . import settings
+from app import settings
 
 db = SQLAlchemy()
 migrate = Migrate()

@@ -15,3 +15,5 @@ def hello_world():
 
 if __name__ == '__main__':
     manager.run()
+
+# 在 Tetmimal 命令行执行 python mymanage.py runserver 以启运服务
